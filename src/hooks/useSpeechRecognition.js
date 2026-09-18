@@ -61,7 +61,7 @@ const LISTENING_OFF_GRACE_MS = 400;
 // instead of hammering the hardware at zero delay forever.
 const MIN_HEALTHY_SESSION_MS = 1500;
 
-export function useSpeechRecognition({ enabled, onWords, language }) {
+export function useSpeechRecognition({ enabled, onWords, language, onDebug }) {
   const [listening, setListening] = useState(false);
   const [error, setError] = useState(null);
   // Mirrors `error` synchronously (state updates aren't visible inside the
@@ -73,7 +73,7 @@ export function useSpeechRecognition({ enabled, onWords, language }) {
     setError(next);
   }, []);
   const recRef = useRef(null);
-  const onWordsRef = useRef(onWords);
+  const onWordsRef = useRef(onWords);\n  const onDebugRef = useRef(onDebug);\n  const debug = useCallback((patch) => onDebugRef.current?.({ ...patch, at: new Date().toISOString() }), []);
   const enabledRef = useRef(enabled);
   const languageRef = useRef(language);
   useLayoutEffect(() => {
@@ -173,10 +173,10 @@ export function useSpeechRecognition({ enabled, onWords, language }) {
       if (words.length < fedCount) fedCount = words.length;
       const fresh = words.slice(fedCount);
       fedCount = words.length;
-      if (fresh.length) onWordsRef.current(fresh);
+      debug({ status: 'listening', eventCount: e.length, transcript: full.trim(), words: fresh });\n      if (fresh.length) { onWordsRef.current(fresh); }
     };
 
-    rec.onstart = () => {
+    rec.onstart = () => {\n      debug({ status: 'listening', eventCount: 0, transcript: '', words: [] });
       fedCount = 0; // results array resets on every (re)start
       sawStart = true;
       startedAt = Date.now();
@@ -206,7 +206,7 @@ export function useSpeechRecognition({ enabled, onWords, language }) {
         setListening(true);
       }
     };
-    rec.onerror = (e) => {
+    rec.onerror = (e) => {\n      debug({ status: 'error', error: e.error || 'unknown' });
       clearHealthTimer(); // this attempt just failed — no confirmation coming
       if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
         deniedStreakRef.current += 1;
@@ -241,7 +241,7 @@ export function useSpeechRecognition({ enabled, onWords, language }) {
         updateError('mic-issue');
       }
     };
-    rec.onend = () => {
+    rec.onend = () => {\n      debug({ status: 'ended' });
       if (recRef.current !== rec) {
         // Already detached (e.g. mic-denied) — no restart is coming, so
         // reflect "not listening" immediately.
