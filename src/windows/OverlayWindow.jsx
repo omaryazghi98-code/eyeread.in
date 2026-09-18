@@ -71,7 +71,16 @@ export function OverlayWindow() {
   // demo-mode mount (sessionActive starts true) useTour's one-shot auto-start
   // could fire against an empty seenTourSteps before the real value loads,
   // permanently missing its one chance to pick up the correct seen-state.
-  const [settingsLoaded, setSettingsLoaded] = useState(false);\n  const [speechDebug, setSpeechDebug] = useState({ status: 'idle', language: '', error: '', transcript: '', words: [], eventCount: 0, at: '' });
+  const [settingsLoaded, setSettingsLoaded] = useState(false);
+  const [speechDebug, setSpeechDebug] = useState({
+    status: 'idle',
+    language: '',
+    error: '',
+    transcript: '',
+    words: [],
+    eventCount: 0,
+    at: '',
+  });
 
   const windowRef = useRef(null);
   const activeWordRef = useRef(null);
