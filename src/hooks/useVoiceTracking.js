@@ -209,7 +209,7 @@ export function useVoiceTracking({
     listening,
     error,
     retry: retryVoice,
-  } = useSpeechRecognition({ enabled: srEnabled, onWords, language });
+  } = useSpeechRecognition({ enabled: srEnabled, onWords, language, onDebug: onSpeechDebug });
 
   // ---- auto-scroll (voice off) ----------------------------------------------
   useEffect(() => {
