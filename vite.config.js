@@ -12,6 +12,12 @@ export default defineConfig({
   server: {
     port: 1420,
     strictPort: true,
+    // Rust/Tauri writes and locks DLLs under this directory while `tauri dev`
+    // is compiling. Do not let Vite's file watcher follow those transient
+    // native build artifacts on Windows.
+    watch: {
+      ignored: ['**/src-tauri/target/**'],
+    },
   },
   envPrefix: ['VITE_', 'TAURI_'],
   // Bake the release channel into the bundle at build time.
