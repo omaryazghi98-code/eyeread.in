@@ -73,11 +73,17 @@ export function useSpeechRecognition({ enabled, onWords, language, onDebug }) {
     setError(next);
   }, []);
   const recRef = useRef(null);
-  const onWordsRef = useRef(onWords);\n  const onDebugRef = useRef(onDebug);\n  const debug = useCallback((patch) => onDebugRef.current?.({ ...patch, at: new Date().toISOString() }), []);
+  const onWordsRef = useRef(onWords);
+  const onDebugRef = useRef(onDebug);
+  const debug = useCallback(
+    (patch) => onDebugRef.current?.({ ...patch, at: new Date().toISOString() }),
+    []
+  );
   const enabledRef = useRef(enabled);
   const languageRef = useRef(language);
   useLayoutEffect(() => {
     onWordsRef.current = onWords;
+    onDebugRef.current = onDebug;
     enabledRef.current = enabled;
     languageRef.current = language;
   });
