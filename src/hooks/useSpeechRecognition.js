@@ -179,10 +179,12 @@ export function useSpeechRecognition({ enabled, onWords, language, onDebug }) {
       if (words.length < fedCount) fedCount = words.length;
       const fresh = words.slice(fedCount);
       fedCount = words.length;
-      debug({ status: 'listening', eventCount: e.length, transcript: full.trim(), words: fresh });\n      if (fresh.length) { onWordsRef.current(fresh); }
+      debug({ status: 'listening', eventCount: e.length, transcript: full.trim(), words: fresh });
+      if (fresh.length) { onWordsRef.current(fresh); }
     };
 
-    rec.onstart = () => {\n      debug({ status: 'listening', eventCount: 0, transcript: '', words: [] });
+    rec.onstart = () => {
+      debug({ status: 'listening', eventCount: 0, transcript: '', words: [] });
       fedCount = 0; // results array resets on every (re)start
       sawStart = true;
       startedAt = Date.now();
@@ -212,7 +214,8 @@ export function useSpeechRecognition({ enabled, onWords, language, onDebug }) {
         setListening(true);
       }
     };
-    rec.onerror = (e) => {\n      debug({ status: 'error', error: e.error || 'unknown' });
+    rec.onerror = (e) => {
+      debug({ status: 'error', error: e.error || 'unknown' });
       clearHealthTimer(); // this attempt just failed — no confirmation coming
       if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
         deniedStreakRef.current += 1;
@@ -247,7 +250,8 @@ export function useSpeechRecognition({ enabled, onWords, language, onDebug }) {
         updateError('mic-issue');
       }
     };
-    rec.onend = () => {\n      debug({ status: 'ended' });
+    rec.onend = () => {
+      debug({ status: 'ended' });
       if (recRef.current !== rec) {
         // Already detached (e.g. mic-denied) — no restart is coming, so
         // reflect "not listening" immediately.
