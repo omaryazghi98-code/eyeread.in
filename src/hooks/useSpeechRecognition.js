@@ -76,7 +76,11 @@ export function useSpeechRecognition({ enabled, onWords, language, onDebug }) {
   const onWordsRef = useRef(onWords);
   const onDebugRef = useRef(onDebug);
   const debug = useCallback(
-    (patch) => onDebugRef.current?.({ ...patch, at: new Date().toISOString() }),
+    (patch) => {
+      const payload = { ...patch, at: new Date().toISOString() };
+      console.debug('[EyeRead Speech]', payload);
+      onDebugRef.current?.(payload);
+    },
     []
   );
   const enabledRef = useRef(enabled);
