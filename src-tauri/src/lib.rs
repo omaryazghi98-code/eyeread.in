@@ -1,3 +1,5 @@
+mod teleprompter_bridge;
+
 use std::sync::Mutex;
 use tauri::{
     menu::{Menu, MenuItem, PredefinedMenuItem, Submenu},
@@ -416,7 +418,7 @@ pub fn run() {
             set_dock_hidden,
             attach_window_to_all_spaces,
         ])
-        .setup(|_app| Ok(()))
+        .setup(|app| {\n            teleprompter_bridge::start(app.handle().clone());\n            Ok(())\n        })
         .build(tauri::generate_context!())
         .expect("error while building eyeread.in")
         .run(|app_handle, event| {
